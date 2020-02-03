@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Office Layout</title>
+<style>
+html{
+  font-family: "游ゴシック体", YuGothic, "YuGothic M", sans-serif;
+}
+button, input, select, textarea {
+  font-family : inherit;
+  font-size : 100%;
+}
+</style>
+</head>
+<body>
+  <div id=app>
+    <office-layout :boxes=boxes></office-layout>
+    <div>
+<pre>
+書式
+xの開始位置, yの開始位置, x方向の長さ, y方向の長さ, 名前
+</pre>
+    </div>
+    <div><textarea rows=20 cols=60 v-model=inputText></textarea></div>
+    <button @click=downloadSvg>download svg as png</button>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src=components/office-layout.js></script>
+  <script src=index.js></script>
+</body>
+</html>
