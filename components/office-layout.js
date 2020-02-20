@@ -1,11 +1,13 @@
 
 class Box{
-  constructor(x, y, xLength, yLength, text){
+  constructor(x, y, xLength, yLength, text, rotateAngle, rectFill){
     this.x = x*1;
     this.y = y*1;
     this.xLength = xLength*1;
     this.yLength = yLength*1;
     this.text = text;
+    this.rotateAngle = rotateAngle;
+    this.rectFill = rectFill || 'white';
   }
   get rectX(){
     return Box.baseSize * (this.x-1);
@@ -25,6 +27,10 @@ class Box{
   get textY(){
     return this.rectY + this.rectHeight/2;
   }
+  get transform(){
+    if(this.rotateAngle == null) return '';
+    return `rotate(${this.rotateAngle} ${this.textX},${this.textY})`;
+  }
   static maxXSize(boxes){
     return Box.maxSize(boxes.map(b=>b.x+(b.xLength-1)));
   }
@@ -36,7 +42,7 @@ class Box{
     return Math.max(...sizes) || 0;
   }
 }
-Box.baseSize = 50;
+Box.baseSize = 40;
 
 Vue.component('office-layout', {
   props: {
@@ -54,9 +60,10 @@ Vue.component('office-layout', {
 <svg :width=svgWidth+1 :height=svgHeight+1>
   <rect x=0 y=0 :width=svgWidth :height=svgHeight fill=white stroke=black stroke-width=1></rect>
   <template v-for="box in boxes">
-  <rect :x=box.rectX :y=box.rectY :width=box.rectWidth :height=box.rectHeight fill=white stroke=black stroke-width=1></rect>
-  <text :x=box.textX :y=box.textY text-anchor="middle" dominant-baseline="central">{{box.text}}</text>
+  <rect :x=box.rectX :y=box.rectY :width=box.rectWidth :height=box.rectHeight :fill=box.rectFill stroke=black stroke-width=1></rect>
+  <text :x=box.textX :y=box.textY :transform=box.transform font-family=Meiryo font-size=12 text-anchor="middle" dominant-baseline="central">{{box.text}}</text>
   </template>
 </svg>
   `
 });
+exports.Box = Box;
