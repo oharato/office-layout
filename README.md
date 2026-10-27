@@ -34,6 +34,8 @@ xの開始位置,yの開始位置,x方向の長さ,y方向の長さ,名前,文�
 - 回転角度は省略できます。`90` を指定すると文字が90度回転します（枠は回転しません）。
 - 空行は無視されます。名前にカンマや改行は使えません。CSV の引用符によるエスケープには対応していません。
 - 図の大きさは配置した枠の右端・下端に合わせて決まります。
+- 不正な行は行番号付きで通知され、正しい行のみ描画します。PNG 保存前にすべての入力エラーを修正してください。
+- PNG 保存は各辺8192px以内、総画素数16,777,216以内に制限しています。上限超過や画像生成の失敗は画面に表示されます。
 
 初期サンプルを変更する場合は [textarea-data.js](textarea-data.js) の `sampleLayoutText` を編集します。
 
@@ -54,10 +56,14 @@ npm start
 
 ```sh
 npm test
+npx playwright install --with-deps chromium
+npm run test:e2e
 npm run audit
 ```
 
 テストでは初期サンプル、入力とリセット、SSR、HTML エスケープ、レート制限、Vue の CDN URL と整合性ハッシュを確認します。
+
+`test:e2e` は Chromium でサンプルを実際に PNG としてダウンロードし、ファイル形式・寸法、入力検証、画像サイズ上限、保存失敗時の通知を確認します。テスト中は CDN の代わりにインストール済みの同一 Vue ファイルを使います。
 
 GitHub Actions でテスト・npm audit・CodeQL を実行します。Dependabot は npm と GitHub Actions の更新を週次で確認します。Vue を更新した際は `index.html` の CDN バージョンと SRI ハッシュも更新してください。不一致はテストで検出されます。
 
