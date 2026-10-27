@@ -9,9 +9,6 @@ server.disable('x-powered-by')
 for (const file of ['index.html', 'index.js', 'textarea-data.js', 'components/office-layout.js']) {
   server.get('/' + file, (req, res) => res.sendFile(path.join(__dirname, file)))
 }
-server.get('/vendor/vue.global.prod.js', (req, res) => {
-  res.sendFile(require.resolve('vue/dist/vue.global.prod.js'))
-})
 
 server.get('/{*path}', async (req, res) => {
   const app = createSSRApp({

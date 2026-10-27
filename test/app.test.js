@@ -1,11 +1,26 @@
 const { test } = require('node:test')
 const assert = require('node:assert/strict')
 const { once } = require('node:events')
-const { JSDOM, VirtualConsole } = require('jsdom')
+const { JSDOM, VirtualConsole, requestInterceptor } = require('jsdom')
+const { readFileSync } = require('node:fs')
+const { createHash } = require('node:crypto')
 const { createSSRApp, h } = require('vue')
 const { renderToString } = require('@vue/server-renderer')
 const { Box, OfficeLayout } = require('../components/office-layout')
 const app = require('../app')
+
+const vueUrl = `https://cdn.jsdelivr.net/npm/vue@${require('vue/package.json').version}/dist/vue.global.prod.js`
+const vueSource = readFileSync(require.resolve('vue/dist/vue.global.prod.js'))
+
+test('static Pages entry pins Vue to the installed version and integrity hash', () => {
+  const dom = new JSDOM(readFileSync(require.resolve('../index.html'), 'utf8'))
+  const script = dom.window.document.querySelector('script')
+  assert.equal(script.src, vueUrl)
+  assert.equal(script.integrity || script.getAttribute('integrity'),
+    'sha384-' + createHash('sha384').update(vueSource).digest('base64'))
+  assert.equal(script.crossOrigin, 'anonymous')
+  dom.window.close()
+})
 
 test('SSR escapes labels and preserves geometry and rotation', async () => {
   const html = await renderToString(createSSRApp({
@@ -41,7 +56,14 @@ test('HTTP routes and browser editor work with Vue 3', async (t) => {
   virtualConsole.on('jsdomError', error => errors.push(error.message))
   virtualConsole.on('error', (...args) => errors.push(args.join(' ')))
   const dom = await JSDOM.fromURL(base + '/index.html', {
-    resources: 'usable', runScripts: 'dangerously', virtualConsole
+    resources: {
+      interceptors: [requestInterceptor(request => {
+        if (request.url === vueUrl) {
+          return new Response(vueSource, { headers: { 'content-type': 'application/javascript' } })
+        }
+      })]
+    },
+    runScripts: 'dangerously', virtualConsole
   })
   t.after(() => dom.window.close())
   if (dom.window.document.readyState !== 'complete') {
