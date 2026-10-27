@@ -12,9 +12,12 @@ Vue.createApp({
     },
   },
   data() {
-    return { inputText };
+    return { inputText: sampleLayoutText };
   },
   methods:{
+    resetSample(){
+      this.inputText = sampleLayoutText;
+    },
     downloadSvg(){
       const svg = document.querySelector("svg");
       const svgData = new XMLSerializer().serializeToString(svg);
@@ -27,7 +30,7 @@ Vue.createApp({
           ctx.drawImage( image, 0, 0 );
           const a = document.createElement("a");
           a.href = canvas.toDataURL("image/png");
-          a.setAttribute("download", "offce-layout.png");
+          a.setAttribute("download", "office-layout.png");
           a.click();
       }
       image.src = "data:image/svg+xml;charset=utf-8;base64," + btoa(unescape(encodeURIComponent(svgData)));
