@@ -73,7 +73,11 @@ test('HTTP routes and browser editor work with Vue 3', async (t) => {
   }
   const { document, Event } = dom.window
   assert.match(document.querySelector('svg').textContent, /山田/)
+  assert.equal(document.querySelectorAll('svg text').length, 26)
+  assert.match(document.querySelector('svg').textContent, /荷物置き場/)
   const textarea = document.querySelector('textarea')
+  const initialText = textarea.value
+  assert.match(initialText, /1,1,1,2,山田/)
   textarea.value = '2,3,2,4,<img src=x onerror=alert(1)>,90'
   textarea.dispatchEvent(new Event('input', { bubbles: true }))
   await dom.window.Vue.nextTick()
@@ -86,6 +90,11 @@ test('HTTP routes and browser editor work with Vue 3', async (t) => {
   await dom.window.Vue.nextTick()
   assert.equal(document.querySelectorAll('svg text').length, 0)
   assert.equal(document.querySelector('svg').getAttribute('width'), '1')
+  document.querySelector('#reset-sample').click()
+  await dom.window.Vue.nextTick()
+  assert.equal(textarea.value, initialText)
+  assert.equal(document.querySelectorAll('svg text').length, 26)
+  assert.match(document.querySelector('svg').textContent, /山田/)
   assert.deepEqual(errors, [])
   let limitedResponse
   for (let i = 0; i < 121; i++) {

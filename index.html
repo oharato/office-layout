@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,15 +17,19 @@ button, input, select, textarea {
 </head>
 <body>
   <div id=app>
+    <h1>オフィス座席表</h1>
+    <p>最初にサンプルの座席表が表示されます。下の入力欄で名前や配置を編集すると、座席表にすぐ反映されます。</p>
     <office-layout :boxes=boxes></office-layout>
     <div>
 <pre>
 書式
-xの開始位置, yの開始位置, x方向の長さ, y方向の長さ, 名前
+xの開始位置, yの開始位置, x方向の長さ, y方向の長さ, 名前, 文字の回転角度（省略可）
 </pre>
     </div>
-    <div><textarea rows=20 cols=60 v-model=inputText></textarea></div>
-    <button @click=downloadSvg>download svg as png</button>
+    <div><label for="layout-input">座席データ</label></div>
+    <div><textarea id="layout-input" rows=20 cols=60 v-model=inputText></textarea></div>
+    <button type="button" id="reset-sample" @click=resetSample>サンプルに戻す</button>
+    <button type="button" @click=downloadSvg>PNGで保存</button>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/vue@3.5.44/dist/vue.global.prod.js" integrity="sha384-tORx0bXmMnTC28EYQe1coaGZKSQupXQEYDBNex8xkzJ9iqUoNy9Y+VFBhVxi4kUr" crossorigin="anonymous"></script>

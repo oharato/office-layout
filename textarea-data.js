@@ -1,4 +1,4 @@
-const inputText = `
+const sampleLayoutText = `
 1,1,1,2,山田
 1,3,1,2,鈴木
 1,5,1,2,木下
