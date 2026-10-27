@@ -13,6 +13,7 @@
   "dependencies": {
     "@vue/server-renderer": "^3.5.44",
     "express": "^5.3.0",
+    "express-rate-limit": "^8.7.1",
     "vue": "^3.5.44"
   },
   "engines": {
