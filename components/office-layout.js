@@ -44,7 +44,7 @@ class Box{
 }
 Box.baseSize = 40;
 
-Vue.component('office-layout', {
+const OfficeLayout = {
   props: {
     boxes: Array,
   },
@@ -65,5 +65,8 @@ Vue.component('office-layout', {
   </template>
 </svg>
   `
-});
-exports.Box = Box;
+};
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { Box, OfficeLayout };
+}
