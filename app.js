@@ -3,8 +3,10 @@ const server = require('express')()
 const { renderToString } = require('@vue/server-renderer')
 const { Box, OfficeLayout } = require('./components/office-layout')
 const path = require('node:path')
+const { rateLimit } = require('express-rate-limit')
 
 server.disable('x-powered-by')
+server.use(rateLimit({ windowMs: 60 * 1000, limit: 120 }))
 // Serve only public assets, never the repository or node_modules directory.
 for (const file of ['index.html', 'index.js', 'textarea-data.js', 'components/office-layout.js']) {
   server.get('/' + file, (req, res) => res.sendFile(path.join(__dirname, file)))

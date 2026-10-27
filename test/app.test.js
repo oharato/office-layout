@@ -31,7 +31,9 @@ test('SSR escapes labels and preserves geometry and rotation', async () => {
   assert.match(html, /width="121" height="241"/)
   assert.match(html, /rotate\(90 80,160\)/)
   assert.match(html, /&lt;script&gt;/)
-  assert.doesNotMatch(html, /<script>/)
+  const dom = new JSDOM(html)
+  assert.equal(dom.window.document.querySelector('script'), null)
+  dom.window.close()
 })
 
 test('HTTP routes and browser editor work with Vue 3', async (t) => {
@@ -85,4 +87,12 @@ test('HTTP routes and browser editor work with Vue 3', async (t) => {
   assert.equal(document.querySelectorAll('svg text').length, 0)
   assert.equal(document.querySelector('svg').getAttribute('width'), '1')
   assert.deepEqual(errors, [])
+  let limitedResponse
+  for (let i = 0; i < 121; i++) {
+    limitedResponse = await fetch(base + '/index.html')
+    await limitedResponse.text()
+    if (limitedResponse.status === 429) break
+  }
+  assert.equal(limitedResponse.status, 429)
+  assert.ok(Number(limitedResponse.headers.get('retry-after')) > 0)
 })
