@@ -1,5 +1,5 @@
-new Vue({
-  el: '#app',
+Vue.createApp({
+  components: { OfficeLayout },
   computed: {
     boxes: function(){
       const lines = this.inputText.split('\n')
@@ -11,8 +11,8 @@ new Vue({
       });
     },
   },
-  data: {
-    inputText: inputText,
+  data() {
+    return { inputText };
   },
   methods:{
     downloadSvg(){
@@ -33,4 +33,4 @@ new Vue({
       image.src = "data:image/svg+xml;charset=utf-8;base64," + btoa(unescape(encodeURIComponent(svgData)));
     },
   }
-})
+}).mount('#app')
